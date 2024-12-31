@@ -1,67 +1,75 @@
+// src/components/Dashboard.tsx
 import React from 'react';
+import { Building2, Store, FileText, TrendingUp } from 'lucide-react';
 import DepartmentCard from './DepartmentCard';
-import { Building2, Store, FileText } from 'lucide-react';
+import { useDataStore } from '../stores/dataStore';
 
 const Dashboard = () => {
-  const departments = [
-    { name: 'Readymade', itemCount: 24 },
-    { name: 'Textiles', itemCount: 18 },
-    { name: 'Household', itemCount: 12 },
+  const { departments, fetchDepartments } = useDataStore();
+
+  React.useEffect(() => {
+    fetchDepartments();
+  }, [fetchDepartments]);
+
+  const stats = [
+    { 
+      title: 'Total Cities',
+      value: '12',
+      icon: Building2,
+      color: 'purple'
+    },
+    {
+      title: 'Total Vendors',
+      value: '48',
+      icon: Store,
+      color: 'blue'
+    },
+    {
+      title: 'Total Invoices',
+      value: '156',
+      icon: FileText,
+      color: 'green'
+    },
+    {
+      title: 'Monthly Growth',
+      value: '+12.5%',
+      icon: TrendingUp,
+      color: 'pink'
+    }
   ];
 
   return (
-    <div className="ml-64 pt-16 min-h-screen bg-gray-50">
-      <div className="p-6">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome to your Tax Invoice Management System</p>
-        </div>
+    <div className="p-6 max-w-7xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-600">Welcome to your Tax Invoice Management System</p>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {stats.map((stat) => (
+          <div key={stat.title} className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:border-gray-200 transition-all duration-200">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-purple-600" />
+              <div className={`w-12 h-12 rounded-lg bg-${stat.color}-100 flex items-center justify-center`}>
+                <stat.icon className={`w-6 h-6 text-${stat.color}-600`} />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Cities</p>
-                <h3 className="text-2xl font-bold text-gray-900">12</h3>
+                <p className="text-sm text-gray-600">{stat.title}</p>
+                <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
               </div>
             </div>
           </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-                <Store className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Total Vendors</p>
-                <h3 className="text-2xl font-bold text-gray-900">48</h3>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
-                <FileText className="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Total Invoices</p>
-                <h3 className="text-2xl font-bold text-gray-900">156</h3>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
+      </div>
 
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Departments</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {departments.map((dept) => (
-              <DepartmentCard key={dept.name} {...dept} />
-            ))}
-          </div>
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">Departments</h2>
+          <button className="text-sm text-blue-600 hover:text-blue-700">View all</button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {departments.map((dept) => (
+            <DepartmentCard key={dept.id} {...dept} />
+          ))}
         </div>
       </div>
     </div>
